@@ -1,4 +1,6 @@
 **/emails-recus/
+id_rsa.pub
+**/.vagrant/
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
