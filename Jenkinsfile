@@ -5,7 +5,8 @@ pipeline {
     stage('Build et Tests unitaires') {
       agent any
       steps {  
-	      echo 'A COMPLETER '
+	      echo 'Building and Unit tests'
+        sh './mvnw -Dmaven.test.failure.ignore=true clean test' 
       }
       post { 
         always { 
@@ -28,7 +29,8 @@ stage('Parallel Stage') {
     stage('Quality analysis') {
       agent any
       steps {  
-          echo "Analyse sonar" 
+          echo "Analyse sonar"
+          sh './mvnw clean verify sonar:sonar' 
       }
     }
   }
@@ -44,6 +46,7 @@ stage('Déploiement artefact') {
 
   steps {
     echo 'Deploying snapshot to Nexus.'
+    sh './mvnw --settings settings.xml -DskipTests clean deploy'
       dir('target/') {
         stash includes: '*.jar', name: 'service'
       }
