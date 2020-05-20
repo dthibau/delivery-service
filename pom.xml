@@ -64,6 +64,14 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+                    <executable>true</executable>
+                    <fork>true</fork>
+                    <!--
+                    Enable the line below to have remote debugging of your application on port 5005
+                    <jvmArguments>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</jvmArguments>
+                    -->
+                </configuration>
 			</plugin>
 			 <plugin>
                 <groupId>org.jacoco</groupId>
@@ -103,4 +111,36 @@
             <url>http://localhost:8081/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
+	<profiles>
+	  <profile>
+	    <id>prod</id>
+		<dependencies>
+		  <dependency>
+    	    <groupId>pl.project13.maven</groupId>
+            <artifactId>git-commit-id-plugin</artifactId>
+			<version>4.0.0</version>
+		  </dependency>
+		</dependencies>
+		<build>
+		  <plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+                    <executable>true</executable>
+                    <fork>true</fork>
+                </configuration>
+				<executions>
+				  <execution>
+				    <goals>
+                      <goal>build-info</goal>
+                    </goals>
+			      </execution>
+				</executions>
+			</plugin>
+		  </plugins>
+		</build>
+	  </profile>
+	</profiles>
+
 </project>
