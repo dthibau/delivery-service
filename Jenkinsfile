@@ -126,11 +126,12 @@ stage('Parallel Stage') {
       script {
         def portNumber = 80 + ("${BRANCH_NAME}".hashCode())%(65535-80)
         sh "kubectl port-forward service/delivery-service-${BRANCH_NAME}  8080:${portNumber} &"
+         sleep 30 // Laisser le service redémarrer
+        echo 'Démarrage 1 users effectuant les 4 appels REST'
+        sh './apache-jmeter-5.2.1/bin/jmeter -JSERVEUR=localhost -JPORT=${portNumber} -n -t Fonctionnel.jmx -l fonc_result.jtl'
       }
 
-      sleep 30 // Laisser le service redémarrer
-      echo 'Démarrage 1 users effectuant les 4 appels REST'
-      sh './apache-jmeter-5.2.1/bin/jmeter -JSERVEUR=localhost -n -t Fonctionnel.jmx -l fonc_result.jtl'
+     
       perfReport 'fonc_result.jtl'
     }
   }
@@ -142,9 +143,10 @@ stage('Parallel Stage') {
       script {
         def portNumber = 80 + ("${BRANCH_NAME}".hashCode())%(65535-80)
         sh "kubectl port-forward service/delivery-service-${BRANCH_NAME}  8080:${portNumber} &"
+        echo 'Démarrage 100 users effectuant 50 fois le scénario de test'
+        sh './apache-jmeter-5.2.1/bin/jmeter -JSERVEUR=localhost -JPORT=${portNumber} -n -t LoadTest.jmx -l result.jtl'
       }
-      echo 'Démarrage 100 users effectuant 50 fois le scénario de test'
-      sh './apache-jmeter-5.2.1/bin/jmeter -JSERVEUR=localhost -n -t LoadTest.jmx -l result.jtl'
+    
       perfReport 'result.jtl'
       // Génération de rapport 
       sh 'mkdir report'
