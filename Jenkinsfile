@@ -123,8 +123,11 @@ stage('Parallel Stage') {
     agent any
     when { not { branch 'master' } } 
     steps {
-      def portNumber = 80 + "${BRANCH_NAME}".hashCode()
-      sh "kubectl port-forward service/delivery-service 8080:${portNumber} &"
+      script {
+        def portNumber = 80 + "${BRANCH_NAME}".hashCode()
+        sh "kubectl port-forward service/delivery-service 8080:${portNumber} &"
+      }
+
       sleep 30 // Laisser le service redémarrer
       echo 'Démarrage 1 users effectuant les 4 appels REST'
       sh './apache-jmeter-5.2.1/bin/jmeter -JSERVEUR=localhost -n -t Fonctionnel.jmx -l fonc_result.jtl'
@@ -136,8 +139,10 @@ stage('Parallel Stage') {
     agent any
     when { not { branch 'master' } } 
     steps {
-      def portNumber = 80 + "${BRANCH_NAME}".hashCode()
-      sh "kubectl port-forward service/delivery-service 8080:${portNumber} &"
+      script {
+        def portNumber = 80 + "${BRANCH_NAME}".hashCode()
+        sh "kubectl port-forward service/delivery-service 8080:${portNumber} &"
+      }
       echo 'Démarrage 100 users effectuant 50 fois le scénario de test'
       sh './apache-jmeter-5.2.1/bin/jmeter -JSERVEUR=localhost -n -t LoadTest.jmx -l result.jtl'
       perfReport 'result.jtl'
