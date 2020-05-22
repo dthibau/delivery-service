@@ -74,6 +74,7 @@ stage('Parallel Stage') {
         not { branch 'master' }
     } 
    steps {
+     cleanWs()
      unstash 'service'
      unstash 'dockerfile'
      script {
