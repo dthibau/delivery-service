@@ -96,12 +96,17 @@ stage('Parallel Stage') {
     when { 
         not { branch 'master' }
     } 
+<<<<<<< HEAD
    steps {
+=======
+    steps {
+>>>>>>> Déploiement Kubernetes recette
 
      script {
         def mvnVersion = sh(returnStdout: true, script: './mvnw org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout').trim()
         // Deploy to kubernetes
         withEnv(["IMAGE=dthibau/delivery-service:$mvnVersion"]) {
+<<<<<<< HEAD
         def testPresenceService = sh(returnStatus: true, script: "kubectl get service | grep delivery-service-${BRANCH_NAME}")
         if ( testPresence.equals(0) ) {
           sh "kubectl delete service delivery-service-${BRANCH_NAME}"
@@ -116,6 +121,19 @@ stage('Parallel Stage') {
    }     
   }
 
+=======
+          def testPresenceService = sh(returnStatus: true, script: "kubectl get service | grep delivery-service-${BRANCH_NAME}")
+          if ( testPresenceService.equals(0) ) {
+            sh "kubectl delete service delivery-service-${BRANCH_NAME}"
+          }
+          sh ("envsubst < src/main/k8/postgres-config.yml | kubectl apply -f -")
+          sh ("envsubst < src/main/k8/postgres-service.yml | kubectl apply -f -")
+          sh ("envsubst < src/main/k8/delivery-service.yml | kubectl apply -f -")
+        }     
+      }
+    }     
+  }
+>>>>>>> Déploiement Kubernetes recette
 
   stage('Test fonctionnel JMETER') {
     agent any
