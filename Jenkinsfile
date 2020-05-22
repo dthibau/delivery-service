@@ -110,7 +110,7 @@ stage('Parallel Stage') {
         sh ("envsubst < src/main/k8/postgres-config.yml | kubectl apply -f -")
         sh ("envsubst < src/main/k8/postgres-service.yml | kubectl apply -f -")
         sh ("envsubst < src/main/k8/delivery-service.yml | kubectl apply -f -")
-        def portNumber = 80 + "${BRANCH_NAME}".hashCode()
+        def portNumber = 80 + ("${BRANCH_NAME}".hashCode())%(65535-80)
         sh "kubectl expose deployment delivery-service-${BRANCH_NAME} --type LoadBalancer --port ${portNumber} --target-port 8080"
         
       }     
@@ -124,7 +124,7 @@ stage('Parallel Stage') {
     when { not { branch 'master' } } 
     steps {
       script {
-        def portNumber = 80 + "${BRANCH_NAME}".hashCode()
+        def portNumber = 80 + ("${BRANCH_NAME}".hashCode())%(65535-80)
         sh "kubectl port-forward service/delivery-service 8080:${portNumber} &"
       }
 
@@ -140,7 +140,7 @@ stage('Parallel Stage') {
     when { not { branch 'master' } } 
     steps {
       script {
-        def portNumber = 80 + "${BRANCH_NAME}".hashCode()
+        def portNumber = 80 + ("${BRANCH_NAME}".hashCode())%(65535-80)
         sh "kubectl port-forward service/delivery-service 8080:${portNumber} &"
       }
       echo 'Démarrage 100 users effectuant 50 fois le scénario de test'
