@@ -103,7 +103,8 @@ stage('Parallel Stage') {
         // Deploy to kubernetes
         withEnv(["IMAGE=dthibau/delivery-service:$mvnVersion"]) {
         def testPresenceService = sh(returnStatus: true, script: "kubectl get service | grep delivery-service-${BRANCH_NAME}")
-        if ( testPresence.equals(0) ) {
+        echo "testPresenceService ${testPresenceService}"
+        if ( testPresenceService.equals(0) ) {
           sh "kubectl delete service delivery-service-${BRANCH_NAME}"
         }
         sh ("envsubst < src/main/k8/postgres-config.yml | kubectl apply -f -")
