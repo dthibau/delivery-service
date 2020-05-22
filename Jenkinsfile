@@ -110,7 +110,7 @@ stage('Parallel Stage') {
         sh ("envsubst < src/main/k8/postgres-config.yml | kubectl apply -f -")
         sh ("envsubst < src/main/k8/postgres-service.yml | kubectl apply -f -")
         sh ("envsubst < src/main/k8/delivery-service.yml | kubectl apply -f -")
-        sh "kubectl expose deployment delivery-service-${BRANCH_NAME} -type LoadBalancer --port 80 --target-port 8080"
+        sh "kubectl expose deployment delivery-service-${BRANCH_NAME} --type LoadBalancer --port 80 --target-port 8080"
         
       }     
      }
