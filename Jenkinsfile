@@ -74,11 +74,13 @@ stage('Parallel Stage') {
         not { branch 'master' }
     } 
    steps {
-     cleanWs()
-     unstash 'service'
-     unstash 'dockerfile'
      script {
-        def mvnVersion = sh(returnStdout: true, script: './mvnw org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout').trim()
+
+      def mvnVersion = sh(returnStdout: true, script: './mvnw org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout').trim()
+
+      cleanWs()
+      unstash 'service'
+      unstash 'dockerfile'
         def dockerImage
         dockerImage = docker.build('delivery-service', '.')
         docker.withRegistry('http://localhost:10000', 'admin_nexus') {
