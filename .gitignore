@@ -33,3 +33,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Terraform ###
+.terraform/
+.terraform*
+*.tfstate
+*.backup
+
