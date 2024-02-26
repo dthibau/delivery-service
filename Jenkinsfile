@@ -44,7 +44,9 @@ stage('Parallel Stage') {
       agent any
       steps {  
           echo "Analyse sonar"
-          sh './mvnw clean verify sonar:sonar' 
+          withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+               sh './mvnw -Dsonar.token=${SONAR_TOKEN} clean verify sonar:sonar'
+          }
       }
     }
   }
